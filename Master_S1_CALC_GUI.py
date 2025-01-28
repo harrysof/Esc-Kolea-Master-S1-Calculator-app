@@ -9,7 +9,7 @@ for subject in [
     td_key = f"{subject}_TD"
     if exam_key not in st.session_state:
         st.session_state[exam_key] = None  # Set to None to make the field empty
-    if td_key not in st.session_state:
+    if td_key not in st.session_state and subject != "Law":  # Skip TD for Law
         st.session_state[td_key] = None  # Set to None to make the field empty
 
 def calculate_semester_average():
@@ -20,8 +20,12 @@ def calculate_semester_average():
 
         try:
             exam_grade = float(st.session_state.get(exam_key, 0.0) or 0.0)
-            td_grade = float(st.session_state.get(td_key, 0.0) or 0.0)
-            subjects_data[subject] = {"exam": exam_grade, "td": td_grade}
+            # For Law, skip TD and use exam grade as the final grade
+            if subject == "Law":
+                subjects_data[subject] = {"exam": exam_grade, "td": 0.0}  # TD is not considered
+            else:
+                td_grade = float(st.session_state.get(td_key, 0.0) or 0.0)
+                subjects_data[subject] = {"exam": exam_grade, "td": td_grade}
 
         except ValueError:
             st.error(f"Invalid input for {subject}. Please enter numbers only.")
@@ -32,7 +36,10 @@ def calculate_semester_average():
 
     total = 0
     for subject, grades in subjects_data.items():
-        average = (grades["exam"] * 0.67) + (grades["td"] * 0.33)
+        if subject == "Law":
+            average = grades["exam"]  # For Law, only exam grade is considered
+        else:
+            average = (grades["exam"] * 0.67) + (grades["td"] * 0.33)
         weight = 4 if subject in ["Inferential Statistics", "Financial Accounting", "Management", "Marketing"] else 3.5
         total += average * weight
 
@@ -64,14 +71,15 @@ for subject in subjects:
             format="%.2f"  # Display two decimal places
         )
     with col2:
-        st.number_input(
-            "TD",  # Simplified label
-            key=f"{subject}_TD", 
-            min_value=0.0, 
-            value=None,  # Set to None to make the field empty
-            step=0.05,  # Increment/decrement by 0.01
-            format="%.2f"  # Display two decimal places
-        )
+        if subject != "Law":  # Skip TD input for Law
+            st.number_input(
+                "TD",  # Simplified label
+                key=f"{subject}_TD", 
+                min_value=0.0, 
+                value=None,  # Set to None to make the field empty
+                step=0.05,  # Increment/decrement by 0.01
+                format="%.2f"  # Display two decimal places
+            )
 
 if st.button("Calculate"):
     calculate_semester_average()
