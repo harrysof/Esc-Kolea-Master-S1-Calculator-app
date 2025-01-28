@@ -1,23 +1,23 @@
-import tkinter as tk
+import streamlit as st
 
 def calculate_semester_average():
-    # Get grades from entry fields
-    Inferential_Statistics_exam = float(entries_exam[0].get())
-    Inferential_Statistics_TD = float(entries_TD[0].get())
-    Financial_Accounting_exam = float(entries_exam[1].get())
-    Financial_Accounting_TD = float(entries_TD[1].get())
-    Management_exam = float(entries_exam[2].get())
-    Management_TD = float(entries_TD[2].get())
-    Marketing_exam = float(entries_exam[3].get())
-    Marketing_TD = float(entries_TD[3].get())
-    Macroeconomy_exam = float(entries_exam[4].get())
-    Macroeconomy_TD = float(entries_TD[4].get())
-    Computer_Science_exam = float(entries_exam[5].get())
-    Computer_Science_TD = float(entries_TD[5].get())
-    Law_exam = float(entries_exam[6].get())
-    Law_TD = float(entries_TD[6].get())
-    English_exam = float(entries_exam[7].get())
-    English_TD = float(entries_TD[7].get())
+    # Get grades from input fields
+    Inferential_Statistics_exam = float(st.session_state.Inferential_Statistics_exam)
+    Inferential_Statistics_TD = float(st.session_state.Inferential_Statistics_TD)
+    Financial_Accounting_exam = float(st.session_state.Financial_Accounting_exam)
+    Financial_Accounting_TD = float(st.session_state.Financial_Accounting_TD)
+    Management_exam = float(st.session_state.Management_exam)
+    Management_TD = float(st.session_state.Management_TD)
+    Marketing_exam = float(st.session_state.Marketing_exam)
+    Marketing_TD = float(st.session_state.Marketing_TD)
+    Macroeconomy_exam = float(st.session_state.Macroeconomy_exam)
+    Macroeconomy_TD = float(st.session_state.Macroeconomy_TD)
+    Computer_Science_exam = float(st.session_state.Computer_Science_exam)
+    Computer_Science_TD = float(st.session_state.Computer_Science_TD)
+    Law_exam = float(st.session_state.Law_exam)
+    Law_TD = float(st.session_state.Law_TD)
+    English_exam = float(st.session_state.English_exam)
+    English_TD = float(st.session_state.English_TD)
     
     # Calculate averages
     Inferential_Statistics_average = (Inferential_Statistics_exam * 0.67) + (Inferential_Statistics_TD * 0.33)
@@ -36,46 +36,25 @@ def calculate_semester_average():
     BetterTotal = "{:.2f}".format(Total)
     
     # Display result
-    result_label.config(text=f"Total: {BetterTotal}\n1st Semester Average: {formatted_float}")
+    st.success(f"Total: {BetterTotal}\n1st Semester Average: {formatted_float}")
 
-# Create GUI window
-root = tk.Tk()
-root.title("Semester Grade Calculator")
+# Streamlit app
+st.title("Semester Grade Calculator")
 
-# Add headers for Exam and TD sections
-exam_header = tk.Label(root, text="Exam")
-exam_header.grid(row=0, column=1, padx=5, pady=5)
-td_header = tk.Label(root, text="TD")
-td_header.grid(row=0, column=2, padx=5, pady=5)
-
-# Add labels and entry fields for each subject
+# Add input fields for each subject
 subjects = [
     "Inferential Statistics", "Financial Accounting", "Management",
     "Marketing", "Macroeconomy", "Computer Science", "Law", "English"
 ]
 
-labels = []
-entries_exam = []
-entries_TD = []
-
-for i, subject in enumerate(subjects):
-    label = tk.Label(root, text=subject)
-    label.grid(row=i+1, column=0, padx=5, pady=5)
-    
-    entry_exam = tk.Entry(root)
-    entry_exam.grid(row=i+1, column=1, padx=5, pady=5)
-    entries_exam.append(entry_exam)
-    
-    entry_TD = tk.Entry(root)
-    entry_TD.grid(row=i+1, column=2, padx=5, pady=5)
-    entries_TD.append(entry_TD)
+for subject in subjects:
+    st.subheader(subject)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.text_input(f"{subject} Exam", key=f"{subject}_exam")
+    with col2:
+        st.text_input(f"{subject} TD", key=f"{subject}_TD")
 
 # Add button to trigger calculation
-calculate_button = tk.Button(root, text="Calculate", command=calculate_semester_average)
-calculate_button.grid(row=len(subjects)+1, columnspan=3, padx=5, pady=10)
-
-# Add label to display result
-result_label = tk.Label(root, text="")
-result_label.grid(row=len(subjects)+2, columnspan=3, padx=5, pady=10)
-
-root.mainloop()
+if st.button("Calculate"):
+    calculate_semester_average()
