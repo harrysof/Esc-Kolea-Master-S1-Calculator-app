@@ -60,7 +60,7 @@ for subject in subjects:
             key=f"{subject}_exam", 
             min_value=0.0, 
             value=None,  # Set to None to make the field empty
-            step=0.01,  # Increment/decrement by 0.01
+            step=0.05,  # Increment/decrement by 0.01
             format="%.2f"  # Display two decimal places
         )
     with col2:
@@ -69,7 +69,7 @@ for subject in subjects:
             key=f"{subject}_TD", 
             min_value=0.0, 
             value=None,  # Set to None to make the field empty
-            step=0.01,  # Increment/decrement by 0.01
+            step=0.05,  # Increment/decrement by 0.01
             format="%.2f"  # Display two decimal places
         )
 
