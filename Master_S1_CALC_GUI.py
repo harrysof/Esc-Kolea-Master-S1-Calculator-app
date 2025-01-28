@@ -1,6 +1,6 @@
 import streamlit as st
 
-# Initialize session state (for consistency)
+# Initialize session state (important!)
 for subject in [
     "Inferential Statistics", "Financial Accounting", "Management",
     "Marketing", "Macroeconomy", "Computer Science", "Law", "English"
@@ -8,10 +8,9 @@ for subject in [
     exam_key = f"{subject}_exam"
     td_key = f"{subject}_TD"
     if exam_key not in st.session_state:
-        st.session_state[exam_key] = ""  # Initialize as empty string
+        st.session_state[exam_key] = None  # Set to None to make the field empty
     if td_key not in st.session_state:
-        st.session_state[td_key] = ""  # Initialize as empty string
-
+        st.session_state[td_key] = None  # Set to None to make the field empty
 
 def calculate_semester_average():
     subjects_data = {}
@@ -20,17 +19,17 @@ def calculate_semester_average():
         td_key = f"{subject}_TD"
 
         try:
-            exam_str = st.session_state.get(exam_key, "") or "" #Handles None as well
-            td_str = st.session_state.get(td_key, "") or "" #Handles None as well
-            exam_grade = float(exam_str) if exam_str else 0  # Convert or 0 if empty
-            td_grade = float(td_str) if td_str else 0  # Convert or 0 if empty
+            exam_grade = float(st.session_state.get(exam_key, 0.0) or 0.0)
+            td_grade = float(st.session_state.get(td_key, 0.0) or 0.0)
             subjects_data[subject] = {"exam": exam_grade, "td": td_grade}
 
         except ValueError:
             st.error(f"Invalid input for {subject}. Please enter numbers only.")
-            return  # Stop calculation if there's an invalid input
+            return  
+        except TypeError:
+            st.error(f"Invalid input for {subject}. Please enter numbers only.")
+            return  
 
-    # ... (rest of the calculation logic - same as before)
     total = 0
     for subject, grades in subjects_data.items():
         average = (grades["exam"] * 0.67) + (grades["td"] * 0.33)
@@ -45,7 +44,7 @@ def calculate_semester_average():
 
 
 # Streamlit app
-st.title("Semester Grade Calculator")
+st.title("Master S1 Grade Calculator")
 
 subjects = [
     "Inferential Statistics", "Financial Accounting", "Management",
@@ -53,13 +52,24 @@ subjects = [
 ]
 
 for subject in subjects:
-    st.subheader(subject)
+    st.subheader(subject)  # Display the subject name as a subheader
     col1, col2 = st.columns(2)
     with col1:
-        st.text_input(f"{subject} Exam", key=f"{subject}_exam")  # Use text_input
+        st.number_input(
+            "Exam",  # Simplified label
+            key=f"{subject}_exam", 
+            min_value=0.0, 
+            value=None,  # Set to None to make the field empty
+            format="%f"  # Use float format without +- buttons
+        )
     with col2:
-        st.text_input(f"{subject} TD", key=f"{subject}_TD")  # Use text_input
-
+        st.number_input(
+            "TD",  # Simplified label
+            key=f"{subject}_TD", 
+            min_value=0.0, 
+            value=None,  # Set to None to make the field empty
+            format="%f"  # Use float format without +- buttons
+        )
 
 if st.button("Calculate"):
     calculate_semester_average()
