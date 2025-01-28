@@ -1,6 +1,6 @@
 import streamlit as st
 
-# Initialize session state (important!)
+# Initialize session state (Best practice: Initialize ONLY in session state)
 for subject in [
     "Inferential Statistics", "Financial Accounting", "Management",
     "Marketing", "Macroeconomy", "Computer Science", "Law", "English"
@@ -8,9 +8,10 @@ for subject in [
     exam_key = f"{subject}_exam"
     td_key = f"{subject}_TD"
     if exam_key not in st.session_state:
-        st.session_state[exam_key] = 0.0
+        st.session_state[exam_key] = 0.0  # Default value
     if td_key not in st.session_state:
-        st.session_state[td_key] = 0.0
+        st.session_state[td_key] = 0.0  # Default value
+
 
 def calculate_semester_average():
     subjects_data = {}
@@ -19,17 +20,16 @@ def calculate_semester_average():
         td_key = f"{subject}_TD"
 
         try:
-            exam_grade = float(st.session_state.get(exam_key, 0.0) or 0.0)
-            td_grade = float(st.session_state.get(td_key, 0.0) or 0.0) 
+            exam_grade = float(st.session_state.get(exam_key, 0.0) or 0.0)  # Handles empty strings and missing keys
+            td_grade = float(st.session_state.get(td_key, 0.0) or 0.0)  # Handles empty strings and missing keys
             subjects_data[subject] = {"exam": exam_grade, "td": td_grade}
 
         except ValueError:
             st.error(f"Invalid input for {subject}. Please enter numbers only.")
-            return  
+            return  # Stop calculation if there's an invalid input
         except TypeError:
             st.error(f"Invalid input for {subject}. Please enter numbers only.")
-            return  
-
+            return  # Stop calculation if there's an invalid input
 
     total = 0
     for subject, grades in subjects_data.items():
@@ -45,7 +45,7 @@ def calculate_semester_average():
 
 
 # Streamlit app
-st.title("Master S1 Grade Calculator")
+st.title("Semester Grade Calculator")
 
 subjects = [
     "Inferential Statistics", "Financial Accounting", "Management",
@@ -56,9 +56,9 @@ for subject in subjects:
     st.subheader(subject)
     col1, col2 = st.columns(2)
     with col1:
-        st.number_input(f"{subject} Exam", key=f"{subject}_exam", min_value=0.0, value=0.0) # Use number_input!!!
+        st.number_input(f"{subject} Exam", key=f"{subject}_exam", min_value=0.0)  # No value= here!!!
     with col2:
-        st.number_input(f"{subject} TD", key=f"{subject}_TD", min_value=0.0, value=0.0) # Use number_input!!!
+        st.number_input(f"{subject} TD", key=f"{subject}_TD", min_value=0.0)  # No value= here!!!
 
 if st.button("Calculate"):
     calculate_semester_average()
