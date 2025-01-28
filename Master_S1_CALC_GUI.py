@@ -60,7 +60,8 @@ for subject in subjects:
             key=f"{subject}_exam", 
             min_value=0.0, 
             value=None,  # Set to None to make the field empty
-            format="%f"  # Use float format without +- buttons
+            step=0.01,  # Increment/decrement by 0.01
+            format="%.2f"  # Display two decimal places
         )
     with col2:
         st.number_input(
@@ -68,7 +69,8 @@ for subject in subjects:
             key=f"{subject}_TD", 
             min_value=0.0, 
             value=None,  # Set to None to make the field empty
-            format="%f"  # Use float format without +- buttons
+            step=0.01,  # Increment/decrement by 0.01
+            format="%.2f"  # Display two decimal places
         )
 
 if st.button("Calculate"):
