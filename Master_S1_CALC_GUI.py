@@ -44,7 +44,7 @@ def calculate_semester_average():
 
 
 # Streamlit app
-st.title("Master S1 Grade Calculator ~ By Sofiane Belkacem Nacer")
+st.title("Master 1 - S1 Grade Calculator ~ By Sofiane Belkacem Nacer")
 
 subjects = [
     "Inferential Statistics", "Financial Accounting", "Management",
