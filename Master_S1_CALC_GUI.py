@@ -9,7 +9,7 @@ for subject in [
     td_key = f"{subject}_TD"
     if exam_key not in st.session_state:
         st.session_state[exam_key] = None  
-    if td_key not in st.session_state and subject != "Law":  
+    if td_key not in st.session_state:  # Remove condition to skip Law
         st.session_state[td_key] = None  
 
 def calculate_semester_average():
@@ -20,12 +20,8 @@ def calculate_semester_average():
 
         try:
             exam_grade = float(st.session_state.get(exam_key, 0.0) or 0.0)
-            
-            if subject == "Law":
-                subjects_data[subject] = {"exam": exam_grade, "td": 0.0} 
-            else:
-                td_grade = float(st.session_state.get(td_key, 0.0) or 0.0)
-                subjects_data[subject] = {"exam": exam_grade, "td": td_grade}
+            td_grade = float(st.session_state.get(td_key, 0.0) or 0.0)
+            subjects_data[subject] = {"exam": exam_grade, "td": td_grade} 
 
         except ValueError:
             st.error(f"Invalid input for {subject}. Please enter numbers only.")
@@ -36,10 +32,7 @@ def calculate_semester_average():
 
     total = 0
     for subject, grades in subjects_data.items():
-        if subject == "Law":
-            average = grades["exam"] 
-        else:
-            average = (grades["exam"] * 0.67) + (grades["td"] * 0.33)
+        average = (grades["exam"] * 0.67) + (grades["td"] * 0.33)  
         weight = 4.5 if subject in ["Inferential Statistics", "Financial Accounting", "Management", "Marketing"] else 3
         total += average * weight
 
@@ -48,6 +41,7 @@ def calculate_semester_average():
     better_total = "{:.2f}".format(total)
 
     st.success(f"Semester Average: {formatted_float}")
+    st.success(f"Total: {better_total}")
 
 
 # Streamlit app
@@ -71,15 +65,14 @@ for subject in subjects:
             format="%.2f"  
         )
     with col2:
-        if subject != "Law": 
-            st.number_input(
-                "TD", 
-                key=f"{subject}_TD", 
-                min_value=0.0, 
-                value=None,  
-                step=0.05,  
-                format="%.2f"  
-            )
+        st.number_input(
+            "TD", 
+            key=f"{subject}_TD", 
+            min_value=0.0, 
+            value=None,  
+            step=0.05,  
+            format="%.2f"  
+        )
 
 if st.button("Calculate"):
     calculate_semester_average()
