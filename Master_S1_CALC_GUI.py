@@ -40,7 +40,7 @@ def calculate_semester_average():
             average = grades["exam"] 
         else:
             average = (grades["exam"] * 0.67) + (grades["td"] * 0.33)
-        weight = 4 if subject in ["Inferential Statistics", "Financial Accounting", "Management", "Marketing"] else 3.5
+        weight = 4.5 if subject in ["Inferential Statistics", "Financial Accounting", "Management", "Marketing"] else 3
         total += average * weight
 
     semester_average = total / 30
