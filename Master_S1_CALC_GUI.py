@@ -1,6 +1,6 @@
 import streamlit as st
 
-# Initialize session state (important!)
+# Initialize session state
 for subject in [
     "Inferential Statistics", "Financial Accounting", "Management",
     "Marketing", "Macroeconomy", "Computer Science", "Law", "English"
@@ -8,9 +8,9 @@ for subject in [
     exam_key = f"{subject}_exam"
     td_key = f"{subject}_TD"
     if exam_key not in st.session_state:
-        st.session_state[exam_key] = None  # Set to None to make the field empty
-    if td_key not in st.session_state and subject != "Law":  # Skip TD for Law
-        st.session_state[td_key] = None  # Set to None to make the field empty
+        st.session_state[exam_key] = None  
+    if td_key not in st.session_state and subject != "Law":  
+        st.session_state[td_key] = None  
 
 def calculate_semester_average():
     subjects_data = {}
@@ -20,9 +20,9 @@ def calculate_semester_average():
 
         try:
             exam_grade = float(st.session_state.get(exam_key, 0.0) or 0.0)
-            # For Law, skip TD and use exam grade as the final grade
+            
             if subject == "Law":
-                subjects_data[subject] = {"exam": exam_grade, "td": 0.0}  # TD is not considered
+                subjects_data[subject] = {"exam": exam_grade, "td": 0.0} 
             else:
                 td_grade = float(st.session_state.get(td_key, 0.0) or 0.0)
                 subjects_data[subject] = {"exam": exam_grade, "td": td_grade}
@@ -37,7 +37,7 @@ def calculate_semester_average():
     total = 0
     for subject, grades in subjects_data.items():
         if subject == "Law":
-            average = grades["exam"]  # For Law, only exam grade is considered
+            average = grades["exam"] 
         else:
             average = (grades["exam"] * 0.67) + (grades["td"] * 0.33)
         weight = 4 if subject in ["Inferential Statistics", "Financial Accounting", "Management", "Marketing"] else 3.5
@@ -59,26 +59,26 @@ subjects = [
 ]
 
 for subject in subjects:
-    st.subheader(subject)  # Display the subject name as a subheader
+    st.subheader(subject)  
     col1, col2 = st.columns(2)
     with col1:
         st.number_input(
-            "Exam",  # Simplified label
+            "Exam",  
             key=f"{subject}_exam", 
             min_value=0.0, 
-            value=None,  # Set to None to make the field empty
-            step=0.05,  # Increment/decrement by 0.01
-            format="%.2f"  # Display two decimal places
+            value=None,  
+            step=0.05,  
+            format="%.2f"  
         )
     with col2:
-        if subject != "Law":  # Skip TD input for Law
+        if subject != "Law": 
             st.number_input(
-                "TD",  # Simplified label
+                "TD", 
                 key=f"{subject}_TD", 
                 min_value=0.0, 
-                value=None,  # Set to None to make the field empty
-                step=0.05,  # Increment/decrement by 0.01
-                format="%.2f"  # Display two decimal places
+                value=None,  
+                step=0.05,  
+                format="%.2f"  
             )
 
 if st.button("Calculate"):
