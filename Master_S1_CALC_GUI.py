@@ -1,6 +1,6 @@
 import streamlit as st
 
-# Initialize session state
+
 for subject in [
     "Inferential Statistics", "Financial Accounting", "Management",
     "Marketing", "Macroeconomy", "Computer Science", "Law", "English"
@@ -9,7 +9,7 @@ for subject in [
     td_key = f"{subject}_TD"
     if exam_key not in st.session_state:
         st.session_state[exam_key] = None  
-    if td_key not in st.session_state:  # Remove condition to skip Law
+    if td_key not in st.session_state:  
         st.session_state[td_key] = None  
 
 def calculate_semester_average():
