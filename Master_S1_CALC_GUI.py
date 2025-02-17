@@ -10,7 +10,7 @@ st.markdown("""
     <style>
     .main-title {
         font-size: 2.5rem;
-        color: #ff812f;
+        color: #2fffe9;
         text-align: center;
         padding: 1.5rem 0;
         background: #0e1118;
@@ -19,7 +19,7 @@ st.markdown("""
         font-weight: bold;
     }
     .subject-header {
-        color: #ff812f;
+        color: #2fffe9;
         font-size: 1.2rem;
         padding: 0.5rem 0;
         border-bottom: 2px solid #E2E8F0;
@@ -27,7 +27,7 @@ st.markdown("""
     }
     .stButton > button {
         width: 100%;
-        background-color: #ff812f;
+        background-color: #2fffe9;
         color: white;
     }
     .result-box {
