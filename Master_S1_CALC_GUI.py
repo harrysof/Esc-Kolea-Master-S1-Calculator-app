@@ -42,7 +42,7 @@ st.markdown("""
 
 st.markdown("""
     <div class="main-title">
-        Master 1 - S1 Grade Calculator<br>
+        Master 1<br>S1 Grade Calculator<br>
         <span style="font-size: 1.2rem; color: #dcdcdc;">By Sofiane Belkacem Nacer</span>
     </div>
     """, unsafe_allow_html=True)
