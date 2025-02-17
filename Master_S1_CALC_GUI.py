@@ -28,7 +28,7 @@ st.markdown("""
     .stButton > button {
         width: 100%;
         background-color: #2fffe9;
-        color: white;
+        color: #0e1118;
     }
     .result-box {
         padding: 1rem;
