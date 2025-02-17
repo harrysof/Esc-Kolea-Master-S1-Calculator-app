@@ -1,7 +1,7 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="Master 1 Calculator",
+    page_title="Master 1\nCalculator",
     page_icon="📊",
     layout="wide"
 )
