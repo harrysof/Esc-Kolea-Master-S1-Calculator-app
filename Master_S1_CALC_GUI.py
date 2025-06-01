@@ -175,7 +175,7 @@ st.markdown("""
         display: flex;
         align-items: center;
         opacity: 0.9; /* Visually similar to a disabled input */
-        margin-top: 1.85rem;
+        margin-top: 1.55rem;
     }
 
 
