@@ -153,9 +153,10 @@ st.markdown("""
         background-color: var(--bg-accent);
         color: var(--text-light);
         padding: 0.5rem 0.75rem;
+        height: 38.4px; /* Explicit height to match .module-average-display */
+        box-sizing: border-box; /* Ensure padding and border are included in height */
     }
-    div[data-testid="stNumberInput"] label,
-    .module-average-label { /* Style for our custom Moyenne label */
+    div[data-testid="stNumberInput"] label {
         font-weight: 400;
         color: var(--text-medium);
         margin-bottom: 0.3rem;
@@ -163,19 +164,25 @@ st.markdown("""
         font-size: 1rem; /* Match Streamlit's default label font size */
     }
     
-    /* Styling for the custom module average display box */
-    .module-average-display {
+    .module-average-label { /* Label for Moyenne */
+        font-weight: 400;
+        color: var(--text-medium);
+        margin-bottom: 0.3rem; /* Space between "Moyenne" label and its display box */
+        display: block;
+        font-size: 1rem; /* Match label font size */
+    }
+    
+    .module-average-display { /* The box displaying the Moyenne value */
         border-radius: 6px;
         border: 1px solid var(--border-color);
         background-color: var(--bg-accent);
         padding: 0.5rem 0.75rem;
-        font-size: 0.95rem; /* Similar to input text size */
-        height: 38.4px; /* Match st.number_input height */
+        font-size: 0.95rem; 
+        height: 38.4px; /* Match height of number input box */
         box-sizing: border-box;
         display: flex;
         align-items: center;
-        opacity: 0.9; /* Visually similar to a disabled input */
-        margin-top: 1.55rem;
+        opacity: 0.9;
     }
 
 
@@ -415,7 +422,6 @@ def calculate_and_store_module_average(session_prefix, subject_key_part):
     except (ValueError, TypeError):
         td_grade_float = 0.0
     
-    # Ensure grades are within bounds for calculation
     exam_grade_float = max(0.0, min(20.0, exam_grade_float))
     td_grade_float = max(0.0, min(20.0, td_grade_float))
 
@@ -453,8 +459,6 @@ def calculate_semester_average(semester_num_char, subjects_with_coef, session_st
         return
         
     for subject_name_loop, data in subjects_data.items():
-        # Recalculate module average using stored (and potentially validated) grades
-        # This ensures consistency if validation changes input, though on_change should keep module_avg correct
         module_avg = (data["exam"] * 0.67) + (data["td"] * 0.33)
         total_weighted_sum += module_avg * data["coef"]
         
@@ -506,25 +510,24 @@ def display_semester_subjects_ui(subjects_dict, semester_id_str, spec_key_prefix
             current_module_avg_val = st.session_state.get(module_avg_key_full, 0.0)
             avg_value_float = float(current_module_avg_val)
 
-            avg_color_css_val = "var(--text-light)" # Default color
-            if avg_value_float >= 15:
-                avg_color_css_val = "var(--glow-color-secondary)"  # Purple
-            elif avg_value_float >= 10:
-                avg_color_css_val = "var(--management-color)"  # Green
-            elif avg_value_float >= 7:
-                avg_color_css_val = "var(--mfb-color)"  # Blue
-            else: # Less than 7
-                avg_color_css_val = "#FF0000"  # Red
+            avg_color_css_val = "var(--text-light)" 
+            if avg_value_float >= 15: avg_color_css_val = "var(--glow-color-secondary)"
+            elif avg_value_float >= 10: avg_color_css_val = "var(--management-color)"
+            elif avg_value_float >= 7: avg_color_css_val = "var(--mfb-color)"
+            else: avg_color_css_val = "#FF0000"
             
-            st.markdown("<label class='module-average-label'>Moyenne</label>", unsafe_allow_html=True)
-            st.markdown(
-                f"""
+            # Use a single st.markdown to contain both label and display box.
+            # Apply a slight negative top margin to the outer div of our custom widget.
+            # The value -0.18rem is approx -2.88px (if 1rem=16px), adjust if needed for perfect alignment.
+            module_avg_html = f"""
+            <div style="margin-top: -0.18rem;"> 
+                <label class='module-average-label'>Moyenne</label>
                 <div class="module-average-display" style="color: {avg_color_css_val};">
                     {avg_value_float:.2f}
                 </div>
-                """,
-                unsafe_allow_html=True
-            )
+            </div>
+            """
+            st.markdown(module_avg_html, unsafe_allow_html=True)
                           
     st.markdown("<br>", unsafe_allow_html=True) 
     
@@ -552,7 +555,7 @@ branch_data_map = {
 with st.sidebar:
     st.markdown("<p class='sidebar-header'>Choisir la Spécialité</p>", unsafe_allow_html=True)
     selected_branch_name = st.selectbox(
-        label=".", # Label is hidden by CSS but required by Streamlit
+        label=".", 
         options=branch_display_names,
         index=0, 
         label_visibility="collapsed" 
@@ -563,10 +566,9 @@ if selected_branch_name:
     selected_branch_key_prefix = branch_config["key_prefix"]
     dynamic_content_class = f"{branch_config['css_class_prefix']}-active-sem-tabs" 
 
-    col_padding1, col_content_area, col_padding2 = st.columns([0.15, 2.7, 0.15]) # Adjust padding as needed
+    col_padding1, col_content_area, col_padding2 = st.columns([0.15, 2.7, 0.15]) 
     with col_content_area:
         st.markdown(f'<div class="semester-tabs-container {dynamic_content_class}">', unsafe_allow_html=True)
-        # Dynamic button color based on selected branch
         st.markdown(f"""
             <style>
                 .{dynamic_content_class} .stButton > button {{
@@ -580,7 +582,7 @@ if selected_branch_name:
             display_semester_subjects_ui(branch_config["s1"], "S1", selected_branch_key_prefix)
         with semester_sub_tabs[1]:
             display_semester_subjects_ui(branch_config["s2"], "S2", selected_branch_key_prefix)
-        st.markdown('</div>', unsafe_allow_html=True) # End of semester-tabs-container
+        st.markdown('</div>', unsafe_allow_html=True) 
 
 st.markdown("""
 <div class="modern-footer">
